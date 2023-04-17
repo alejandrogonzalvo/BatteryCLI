@@ -7,10 +7,13 @@ from time import sleep
 def draw_menu(stdscr):
 
     view: int = 1
-
     stdscr = curses.initscr()
-    data_stream: Serial = Serial("/dev/ttyUSB0")
-    data_stream.baudrate = 115200
+    
+    try:
+        data_stream: Serial = Serial("/dev/ttyUSB0")
+        data_stream.baudrate = 115200
+    except:
+        return -1
 
     # Non blocking getch
     stdscr.nodelay(True)
@@ -67,7 +70,10 @@ def draw_menu(stdscr):
         sleep(0.1)
         stdscr.refresh()
 def main():
-    curses.wrapper(draw_menu)
+    error = curses.wrapper(draw_menu)
+
+    if error == -1:
+        print("\nNo UART port detected.\t Check connections! \n")
 
 if __name__ == "__main__":
     main()
